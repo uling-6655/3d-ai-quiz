@@ -1,244 +1,162 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-TW">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>3D設計題庫測驗系統</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3D AI 測驗系統</title>
 
 <style>
 body{
-font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+font-family:sans-serif;
 background:#f5f5f5;
-margin:0;
-padding:20px;
-}
-
-.container{
-max-width:700px;
-margin:auto;
+padding:15px;
 }
 
 .card{
 background:white;
-padding:20px;
-border-radius:15px;
+padding:15px;
+border-radius:12px;
+margin-bottom:15px;
 box-shadow:0 2px 8px rgba(0,0,0,.1);
-margin-bottom:20px;
 }
 
 button{
 width:100%;
-padding:15px;
-margin:8px 0;
-font-size:18px;
+padding:12px;
+margin:5px 0;
 border:none;
 border-radius:10px;
-background:#007AFF;
-color:white;
-}
-
-.answer{
-background:#fff;
-color:#000;
-border:1px solid #ccc;
+font-size:18px;
 }
 
 .correct{
-background:#34C759 !important;
-color:white !important;
+background:#28a745;
+color:white;
 }
 
 .wrong{
-background:#FF3B30 !important;
-color:white !important;
+background:#dc3545;
+color:white;
+}
+
+.normal{
+background:#eee;
+}
+
+#result{
+font-size:22px;
+font-weight:bold;
+margin-top:10px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<h2>3D AI 模擬測驗</h2>
 
 <div class="card">
-<h2>3D設計題庫測驗系統</h2>
-
-<button onclick="startQuiz(50)">50題模擬考</button>
-<button onclick="startQuiz(100)">100題模擬考</button>
-
-<p>目前為第一版，可立即作答與判斷正確答案。</p>
+<div id="question"></div>
 </div>
 
-<div id="quizArea" class="card" style="display:none;">
-<h3 id="qno"></h3>
-<p id="question"></p>
+<div id="choices"></div>
 
-<button class="answer" onclick="checkAnswer('A')">A</button>
-<button class="answer" onclick="checkAnswer('B')">B</button>
-<button class="answer" onclick="checkAnswer('C')">C</button>
-<button class="answer" onclick="checkAnswer('D')">D</button>
-
-<p id="result"></p>
-
-<button onclick="nextQuestion()">下一題</button>
-</div>
-
-<div class="card">
-<h3>統計</h3>
-<p id="stats">答對 0 題｜答錯 0 題</p>
-</div>
-
-</div>
+<div id="result"></div>
 
 <script>
 
 const questions = [
 
 {
-question:"261. 關於AI，下列敘述何者正確？",
-answer:"B"
+q:"261. 關於AI，下列何者正確？",
+a:["AI僅能處理結構化資料","AI涵蓋多種學科領域與技術","AI未被應用於醫療","AI無法應用於金融"],
+answer:1
 },
 
 {
-question:"262. 下列何者非大數據特徵？",
-answer:"D"
+q:"262. 下列何者非大數據特徵？",
+a:["資料量大","資料變動速度快","資料多樣性","資料存儲位置固定"],
+answer:3
 },
 
 {
-question:"263. 銀行聊天機器人主要技術？",
-answer:"B"
+q:"263. 銀行客服聊天機器人主要使用哪種技術？",
+a:["資料庫管理","機器學習與自然語言處理","網路安全","網頁開發"],
+answer:1
 },
 
 {
-question:"264. 生成式AI最可能使用於？",
-answer:"D"
+q:"264. 生成式AI最可能使用於？",
+a:["產品檢測","醫學影像分析","監控系統","虛擬現實圖像"],
+answer:3
 },
 
 {
-question:"265. AI治理的重要性？",
-answer:"D"
-},
-
-{
-question:"266. Low Code/No Code特性？",
-answer:"B"
-},
-
-{
-question:"267. No-Code AI工具特色？",
-answer:"C"
-},
-
-{
-question:"268. 使用生成式AI應注意？",
-answer:"B"
-},
-
-{
-question:"269. 學校教師使用生成式AI？",
-answer:"D"
-},
-
-{
-question:"270. AI風險管理中的倫理風險？",
-answer:"A"
-},
-
-{
-question:"271. 何者屬AI或機器學習技術？",
-answer:"D"
-},
-
-{
-question:"272. NLP文字切割步驟稱為？",
-answer:"C"
-},
-
-{
-question:"273. NLP主要用途？",
-answer:"A"
-},
-
-{
-question:"274. 關於深度學習何者不正確？",
-answer:"B"
-},
-
-{
-question:"275. 機器學習部署趨勢？",
-answer:"A"
+q:"265. 在AI治理中，下列何者重要？",
+a:["統一AI發展標準","避免AI技術濫用","促進AI技術轉移","以上皆是"],
+answer:3
 }
 
 ];
 
 let current=0;
-let correct=0;
-let wrong=0;
 
-function startQuiz(num){
+function loadQuestion(){
 
-document.getElementById("quizArea").style.display="block";
-
-current=0;
-correct=0;
-wrong=0;
-
-showQuestion();
-
-}
-
-function showQuestion(){
+document.getElementById("result").innerHTML="";
 
 let q=questions[current];
 
-document.getElementById("qno").innerText=
-"第 "+(current+1)+" 題";
+document.getElementById("question").innerHTML=q.q;
 
-document.getElementById("question").innerText=
-q.question;
+let html="";
 
-document.getElementById("result").innerText="";
+q.a.forEach((choice,index)=>{
 
+html+=`
+<button class="normal"
+onclick="checkAnswer(${index})">
+${String.fromCharCode(65+index)}. ${choice}
+</button>
+`;
+
+});
+
+document.getElementById("choices").innerHTML=html;
 }
 
-function checkAnswer(ans){
+function checkAnswer(i){
 
 let q=questions[current];
 
-if(ans===q.answer){
+if(i===q.answer){
 
-correct++;
-
-document.getElementById("result").innerHTML=
-"✅ 正確";
+document.getElementById("result").innerHTML="✅ 答對";
 
 }else{
 
-wrong++;
-
 document.getElementById("result").innerHTML=
-"❌ 錯誤，答案："+q.answer;
-
+"❌ 答錯 正確答案："+String.fromCharCode(65+q.answer);
 }
 
-document.getElementById("stats").innerText=
-"答對 "+correct+" 題｜答錯 "+wrong+" 題";
-
-}
-
-function nextQuestion(){
+setTimeout(()=>{
 
 current++;
 
 if(current>=questions.length){
 
-alert("測驗完成");
+document.body.innerHTML=
+"<h1>測驗完成</h1>";
 
 return;
 }
 
-showQuestion();
+loadQuestion();
 
+},1000);
 }
+
+loadQuestion();
 
 </script>
 
