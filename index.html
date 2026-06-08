@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3D設計題庫測驗系統</title>
+
+<style>
+body{
+font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+background:#f5f5f5;
+margin:0;
+padding:20px;
+}
+
+.container{
+max-width:700px;
+margin:auto;
+}
+
+.card{
+background:white;
+padding:20px;
+border-radius:15px;
+box-shadow:0 2px 8px rgba(0,0,0,.1);
+margin-bottom:20px;
+}
+
+button{
+width:100%;
+padding:15px;
+margin:8px 0;
+font-size:18px;
+border:none;
+border-radius:10px;
+background:#007AFF;
+color:white;
+}
+
+.answer{
+background:#fff;
+color:#000;
+border:1px solid #ccc;
+}
+
+.correct{
+background:#34C759 !important;
+color:white !important;
+}
+
+.wrong{
+background:#FF3B30 !important;
+color:white !important;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="card">
+<h2>3D設計題庫測驗系統</h2>
+
+<button onclick="startQuiz(50)">50題模擬考</button>
+<button onclick="startQuiz(100)">100題模擬考</button>
+
+<p>目前為第一版，可立即作答與判斷正確答案。</p>
+</div>
+
+<div id="quizArea" class="card" style="display:none;">
+<h3 id="qno"></h3>
+<p id="question"></p>
+
+<button class="answer" onclick="checkAnswer('A')">A</button>
+<button class="answer" onclick="checkAnswer('B')">B</button>
+<button class="answer" onclick="checkAnswer('C')">C</button>
+<button class="answer" onclick="checkAnswer('D')">D</button>
+
+<p id="result"></p>
+
+<button onclick="nextQuestion()">下一題</button>
+</div>
+
+<div class="card">
+<h3>統計</h3>
+<p id="stats">答對 0 題｜答錯 0 題</p>
+</div>
+
+</div>
+
+<script>
+
+const questions = [
+
+{
+question:"261. 關於AI，下列敘述何者正確？",
+answer:"B"
+},
+
+{
+question:"262. 下列何者非大數據特徵？",
+answer:"D"
+},
+
+{
+question:"263. 銀行聊天機器人主要技術？",
+answer:"B"
+},
+
+{
+question:"264. 生成式AI最可能使用於？",
+answer:"D"
+},
+
+{
+question:"265. AI治理的重要性？",
+answer:"D"
+},
+
+{
+question:"266. Low Code/No Code特性？",
+answer:"B"
+},
+
+{
+question:"267. No-Code AI工具特色？",
+answer:"C"
+},
+
+{
+question:"268. 使用生成式AI應注意？",
+answer:"B"
+},
+
+{
+question:"269. 學校教師使用生成式AI？",
+answer:"D"
+},
+
+{
+question:"270. AI風險管理中的倫理風險？",
+answer:"A"
+},
+
+{
+question:"271. 何者屬AI或機器學習技術？",
+answer:"D"
+},
+
+{
+question:"272. NLP文字切割步驟稱為？",
+answer:"C"
+},
+
+{
+question:"273. NLP主要用途？",
+answer:"A"
+},
+
+{
+question:"274. 關於深度學習何者不正確？",
+answer:"B"
+},
+
+{
+question:"275. 機器學習部署趨勢？",
+answer:"A"
+}
+
+];
+
+let current=0;
+let correct=0;
+let wrong=0;
+
+function startQuiz(num){
+
+document.getElementById("quizArea").style.display="block";
+
+current=0;
+correct=0;
+wrong=0;
+
+showQuestion();
+
+}
+
+function showQuestion(){
+
+let q=questions[current];
+
+document.getElementById("qno").innerText=
+"第 "+(current+1)+" 題";
+
+document.getElementById("question").innerText=
+q.question;
+
+document.getElementById("result").innerText="";
+
+}
+
+function checkAnswer(ans){
+
+let q=questions[current];
+
+if(ans===q.answer){
+
+correct++;
+
+document.getElementById("result").innerHTML=
+"✅ 正確";
+
+}else{
+
+wrong++;
+
+document.getElementById("result").innerHTML=
+"❌ 錯誤，答案："+q.answer;
+
+}
+
+document.getElementById("stats").innerText=
+"答對 "+correct+" 題｜答錯 "+wrong+" 題";
+
+}
+
+function nextQuestion(){
+
+current++;
+
+if(current>=questions.length){
+
+alert("測驗完成");
+
+return;
+}
+
+showQuestion();
+
+}
+
+</script>
+
+</body>
+</html>
